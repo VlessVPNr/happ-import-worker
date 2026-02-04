@@ -1,0 +1,9 @@
+name = "happ-import"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "echo 'No build step required'"
+
+[[rules]]
+type = "WorkerRoute"
+pattern = "happ-import.*.workers.dev/*"
