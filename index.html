@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happ Import Service</title>
+    <script>
+        // Получаем параметр config из URL
+        function getConfigFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('config');
+        }
+        
+        function openHapp() {
+            const configB64 = getConfigFromURL();
+            if (configB64) {
+                // Пытаемся открыть Happ
+                window.location.href = 'happ://import/config?config=' + configB64;
+                
+                // Fallback через 1 секунду
+                setTimeout(() => {
+                    document.getElementById('fallback').style.display = 'block';
+                    document.getElementById('loading').style.display = 'none';
+                }, 1000);
+            } else {
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+        
+        function copyToClipboard() {
+            const configB64 = getConfigFromURL();
+            if (configB64) {
+                try {
+                    // Декодируем и показываем ключ
+                    const decoded = atob(configB64);
+                    const config = JSON.parse(decoded);
+                    const vlessKey = config.configs[0].config;
+                    
+                    navigator.clipboard.writeText(vlessKey).then(() => {
+                        alert('✅ Ключ скопирован!');
+                    });
+                } catch (e) {
+                    alert('❌ Ошибка декодирования');
+                }
+            }
+        }
+        
+        window.onload = openHapp;
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background: #007AFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Импорт в Happ VPN</h1>
+    
+    <div id="loading">
+        <p>Открываем Happ...</p>
+    </div>
+    
+    <div id="fallback" style="display: none;">
+        <h3>Если Happ не открылся:</h3>
+        <button onclick="copyToClipboard()" class="btn">📋 Скопировать ключ</button>
+        <br>
+        <a href="https://play.google.com/store/apps/details?id=com.happproxy" class="btn">🤖 Android</a>
+        <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" class="btn"> iOS</a>
+    </div>
+    
+    <div id="error" style="display: none; color: red;">
+        <p>❌ Конфигурация не найдена в URL</p>
+    </div>
+</body>
+</html>
