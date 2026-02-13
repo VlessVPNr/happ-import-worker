@@ -1,716 +1,652 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🚀 Импорт VPN конфигурации | Happ</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
-    <meta name="theme-color" content="#007AFF">
-    <style>
-        /* CSS Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        /* Основные стили */
-        :root {
-            --primary: #007AFF;
-            --primary-dark: #0056CC;
-            --success: #34C759;
-            --danger: #FF3B30;
-            --warning: #FF9500;
-            --dark: #1C1C1E;
-            --light: #F2F2F7;
-            --gray: #8E8E93;
-            --radius: 16px;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: var(--dark);
-        }
-        
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--radius);
-            padding: 30px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: var(--shadow);
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .icon {
-            font-size: 64px;
-            margin-bottom: 15px;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, var(--primary), #9D50BB);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .subtitle {
-            color: var(--gray);
-            font-size: 16px;
-            line-height: 1.5;
-        }
-        
-        /* Status Cards */
-        .status-card {
-            border-radius: var(--radius);
-            padding: 25px;
-            margin: 25px 0;
-            transition: var(--transition);
-        }
-        
-        .loading-card {
-            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
-            border-left: 5px solid var(--primary);
-            animation: shimmer 2s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { opacity: 1; }
-            50% { opacity: 0.9; }
-            100% { opacity: 1; }
-        }
-        
-        .error-card {
-            background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
-            border-left: 5px solid var(--danger);
-        }
-        
-        .fallback-card {
-            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
-            border-left: 5px solid var(--warning);
-        }
-        
-        .status-icon {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-        
-        .status-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        
-        .status-text {
-            font-size: 16px;
-            line-height: 1.5;
-            color: var(--gray);
-        }
-        
-        /* Key Display */
-        .key-container {
-            background: var(--light);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .key-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        #vlessKey {
-            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-            font-size: 14px;
-            word-break: break-all;
-            line-height: 1.4;
-            color: var(--dark);
-            background: transparent;
-            border: none;
-            width: 100%;
-            min-height: 80px;
-            resize: none;
-            overflow-y: auto;
-        }
-        
-        #vlessKey:focus {
-            outline: none;
-        }
-        
-        /* Buttons */
-        .buttons-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 25px 0;
-        }
-        
-        @media (max-width: 480px) {
-            .buttons-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 16px 20px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            text-align: center;
-        }
-        
-        .btn:hover, .btn:active {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, var(--success), #2AA952);
-            color: white;
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #E68A00);
-            color: white;
-        }
-        
-        .btn-info {
-            background: linear-gradient(135deg, #AF52DE, #9D50BB);
-            color: white;
-        }
-        
-        .btn-full {
-            grid-column: span 2;
-        }
-        
-        @media (max-width: 480px) {
-            .btn-full {
-                grid-column: span 1;
-            }
-        }
-        
-        .btn-icon {
-            font-size: 20px;
-        }
-        
-        /* Instructions */
-        .instructions {
-            background: var(--light);
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-        }
-        
-        .instructions-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .steps {
-            counter-reset: step-counter;
-            list-style: none;
-        }
-        
-        .step {
-            counter-increment: step-counter;
-            margin-bottom: 15px;
-            padding-left: 40px;
-            position: relative;
-            line-height: 1.5;
-        }
-        
-        .step:before {
-            content: counter(step-counter);
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 28px;
-            height: 28px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        /* Footer */
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            color: var(--gray);
-            font-size: 14px;
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 10px;
-        }
-        
-        .footer-link {
-            color: var(--primary);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .footer-link:hover {
-            opacity: 0.8;
-        }
-        
-        /* Hidden elements */
-        .hidden {
-            display: none !important;
-        }
-        
-        /* Animations */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .slide-in {
-            animation: slideIn 0.5s ease-out forwards;
-        }
-        
-        /* Progress bar */
-        .progress-container {
-            width: 100%;
-            height: 4px;
-            background: rgba(0, 122, 255, 0.1);
-            border-radius: 2px;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), #9D50BB);
-            border-radius: 2px;
-            animation: progress 2s ease-in-out infinite;
-        }
-        
-        @keyframes progress {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        
-        /* Platform detection */
-        .platform-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        
-        .android-badge {
-            background: #3DDC84;
-            color: #000;
-        }
-        
-        .ios-badge {
-            background: #000;
-            color: #FFF;
-        }
-        
-        /* Copy confirmation */
-        .copy-confirmation {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--success);
-            color: white;
-            padding: 12px 24px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            animation: slideInRight 0.3s ease-out;
-            z-index: 1000;
-            display: none;
-        }
-        
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VLESS VPN Store — Web Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    :root {
+      --bg: #0b0e1e;
+      --panel: rgba(255, 255, 255, 0.05);
+      --panel-strong: rgba(255, 255, 255, 0.08);
+      --accent: #4a6cf7;
+      --success: #00d09c;
+      --danger: #ff5e5e;
+      --text: #f3f6ff;
+      --muted: #a7b2d8;
+      --radius: 16px;
+      --shadow: 0 16px 40px rgba(5, 10, 30, 0.45);
+      --transition: 0.25s ease;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top right, #1a2150 0%, var(--bg) 35%), var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    code {
+      display: block;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 12px;
+      overflow-wrap: anywhere;
+      color: #d4deff;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 24px));
+      margin-inline: auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(14px);
+      background: rgba(11, 14, 30, 0.88);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .header-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+      gap: 10px;
+    }
+
+    .logo { font-weight: 800; letter-spacing: 0.4px; }
+
+    .menu-toggle {
+      display: none;
+      font-size: 1.1rem;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.2);
+      background: transparent;
+      border-radius: 12px;
+      padding: 8px 10px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      color: var(--muted);
+      padding: 9px 12px;
+      border-radius: 10px;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--text);
+      background: rgba(74, 108, 247, 0.2);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chip {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: .9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chip.clickable { cursor: pointer; transition: var(--transition); }
+    .chip.clickable:hover { box-shadow: 0 0 0 1px rgba(74,108,247,.6), 0 0 22px rgba(74,108,247,.35); }
+
+    main { padding: 28px 0 60px; }
+    section { margin-bottom: 36px; }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 18px;
+      padding: 34px 24px;
+    }
+
+    .hero h1 { margin: 0; font-size: clamp(1.4rem, 3vw, 2.2rem); }
+    .hero p { margin: 0; color: var(--muted); font-size: 1.05rem; }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: var(--transition);
+      color: #fff;
+      background: #2f3e73;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 24px rgba(74,108,247,.45);
+    }
+
+    .btn.primary { background: linear-gradient(135deg, #4a6cf7, #3255e4); }
+    .btn.success { background: linear-gradient(135deg, #00d09c, #00b789); color: #06281e; }
+    .btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,.2); }
+    .btn.danger { background: linear-gradient(135deg, #ff7575, #ff5e5e); }
+
+    .title-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .title-row h2 { margin: 0; font-size: 1.2rem; }
+
+    .tabs { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    .tab {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: var(--transition);
+    }
+    .tab.active { color: #fff; background: rgba(74,108,247,.24); border-color: rgba(74,108,247,.7); }
+
+    .skeleton-wrap { display: none; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .skeleton {
+      height: 140px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,255,255,.12), rgba(255,255,255,.05));
+      background-size: 200% 100%;
+      animation: pulse 1.1s linear infinite;
+    }
+
+    @keyframes pulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .pricing-grid,
+    .devices-grid,
+    .ref-grid,
+    .top-grid,
+    .admin-stats,
+    .payments-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .pricing-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+    .price-card h3 { margin: 0 0 4px; }
+    .price-card p { margin: 0 0 16px; color: var(--muted); }
+    .price { font-size: 1.3rem; font-weight: 800; margin-bottom: 14px; }
+
+    .devices-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+    .device-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+    .muted { color: var(--muted); }
+
+    .progress {
+      height: 8px;
+      background: rgba(255,255,255,.1);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    .progress > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), #5cffcf);
+    }
+
+    .icon-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .icon-btns .btn { padding: 8px 10px; font-size: .86rem; }
+
+    .device-counter { font-size: .9rem; color: var(--muted); }
+
+    .ref-grid { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-bottom: 12px; }
+    .stat { text-align: center; }
+    .stat strong { display: block; font-size: 1.2rem; margin-top: 4px; }
+
+    .copy-note {
+      opacity: 0;
+      color: var(--success);
+      font-size: .85rem;
+      transition: var(--transition);
+      margin-left: 10px;
+    }
+    .copy-note.show { opacity: 1; }
+
+    .top-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 12px; }
+
+    .amounts { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+    .amount-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.15);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 700;
+    }
+    .amount-btn.active,
+    .amount-btn:hover { border-color: var(--accent); box-shadow: 0 0 18px rgba(74,108,247,.4); }
+
+    .two-col { display: grid; gap: 12px; grid-template-columns: 1fr; }
+
+    .faq-item {
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      margin-bottom: 10px;
+    }
+
+    .faq-q {
+      width: 100%;
+      text-align: left;
+      padding: 14px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: .95rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-a { max-height: 0; overflow: hidden; padding: 0 14px; color: var(--muted); transition: max-height .3s ease, padding .3s ease; }
+    .faq-item.open .faq-a { max-height: 140px; padding: 0 14px 14px; }
+
+    .admin-pay {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status { padding: 4px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; }
+    .pending { background: rgba(255, 184, 65, .18); color: #ffca7b; }
+    .approved { background: rgba(0,208,156,.2); color: #83ffd9; }
+    .declined { background: rgba(255,94,94,.2); color: #ff9f9f; }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,.1);
+      padding: 22px 0 30px;
+      color: var(--muted);
+    }
+    .footer-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+      z-index: 200;
+      padding: 14px;
+    }
+    .modal.open { opacity: 1; pointer-events: all; }
+    .modal-content {
+      width: min(520px, 100%);
+      background: #121833;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .close { background: transparent; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+
+    .field, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.04);
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px;
+      font-family: inherit;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+
+    .admin-only { display: none; }
+    body.admin .admin-only { display: inline-flex; }
+    body.admin #admin { display: block; }
+    #admin { display: none; }
+
+    @media (max-width: 980px) {
+      .menu-toggle { display: block; }
+      nav {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        top: 72px;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+        border-radius: 14px;
+        background: rgba(11,14,30,.98);
+        border: 1px solid rgba(255,255,255,.1);
+      }
+      nav.open { display: flex; }
+      .header-wrap { position: relative; }
+      .header-right { margin-left: auto; }
+      .skeleton-wrap { grid-template-columns: 1fr; }
+    }
+
+    @media (min-width: 768px) {
+      .two-col { grid-template-columns: 1fr 1fr; }
+      .hero { padding: 44px 34px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Copy Confirmation -->
-    <div id="copyConfirmation" class="copy-confirmation">
-        ✅ Ключ скопирован!
+  <header>
+    <div class="container header-wrap">
+      <div class="logo">VLESS VPN</div>
+      <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+      <nav id="mainNav">
+        <a class="nav-link active" href="#home">Главная</a>
+        <a class="nav-link" href="#tariffs">Тарифы</a>
+        <a class="nav-link" href="#devices">Мои устройства</a>
+        <a class="nav-link" href="#referrals">Рефералы</a>
+        <a class="nav-link" href="#support">Поддержка</a>
+        <a class="nav-link admin-only" href="#admin">Админ-панель</a>
+      </nav>
+      <div class="header-right">
+        <a class="chip clickable" href="#topup">💰 1 250 ₽</a>
+        <span class="chip">@user_123</span>
+        <button class="btn ghost" id="adminToggle">👮 Режим админа</button>
+      </div>
     </div>
-    
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="icon">🔐</div>
-            <h1>Импорт VPN конфигурации</h1>
-            <p class="subtitle">Автоматическое добавление в приложение Happ</p>
-        </div>
-        
-        <!-- Loading State -->
-        <div id="loading" class="status-card loading-card">
-            <div class="status-icon">⏳</div>
-            <h2 class="status-title">Открываем Happ...</h2>
-            <p class="status-text">Пожалуйста, подождите. Приложение должно открыться автоматически.</p>
-            
-            <div class="progress-container">
-                <div class="progress-bar"></div>
-            </div>
-            
-            <!-- Platform Detection -->
-            <div id="platformInfo" class="hidden">
-                <span id="platformBadge" class="platform-badge"></span>
-                <p id="platformHint" class="status-text"></p>
-            </div>
-        </div>
-        
-        <!-- Error State -->
-        <div id="error" class="status-card error-card hidden">
-            <div class="status-icon">❌</div>
-            <h2 class="status-title">Конфигурация не найдена</h2>
-            <p class="status-text">Параметр config отсутствует в URL. Пожалуйста, используйте правильную ссылку из Telegram бота.</p>
-        </div>
-        
-        <!-- Fallback State -->
-        <div id="fallback" class="status-card fallback-card hidden slide-in">
-            <div class="status-icon">📱</div>
-            <h2 class="status-title">Ручной импорт</h2>
-            <p class="status-text">Если Happ не открылся автоматически, выполните следующие шаги:</p>
-            
-            <!-- Key Display -->
-            <div class="key-container">
-                <div class="key-label">
-                    <span>🔑 Ваш VPN ключ</span>
-                </div>
-                <textarea id="vlessKey" readonly></textarea>
-            </div>
-            
-            <!-- Buttons -->
-            <div class="buttons-grid">
-                <button id="copyBtn" class="btn btn-primary">
-                    <span class="btn-icon">📋</span>
-                    Скопировать ключ
-                </button>
-                
-                <button id="retryBtn" class="btn btn-secondary">
-                    <span class="btn-icon">🔄</span>
-                    Повторить импорт
-                </button>
-                
-                <a href="https://play.google.com/store/apps/details?id=com.happproxy&hl=ru" 
-                   target="_blank" 
-                   class="btn btn-warning">
-                    <span class="btn-icon">🤖</span>
-                    Скачать для Android
-                </a>
-                
-                <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" 
-                   target="_blank" 
-                   class="btn btn-info">
-                    <span class="btn-icon"></span>
-                    Скачать для iOS
-                </a>
-                
-                <button id="shareBtn" class="btn btn-full btn-primary">
-                    <span class="btn-icon">📤</span>
-                    Поделиться конфигурацией
-                </button>
-            </div>
-            
-            <!-- Instructions -->
-            <div class="instructions">
-                <h3 class="instructions-title">
-                    <span>📋</span>
-                    Пошаговая инструкция
-                </h3>
-                <ol class="steps">
-                    <li class="step">Нажмите кнопку "Скопировать ключ" выше</li>
-                    <li class="step">Откройте приложение Happ на вашем устройстве</li>
-                    <li class="step">Нажмите "+" в правом нижнем углу экрана</li>
-                    <li class="step">Выберите "Импорт из буфера обмена"</li>
-                    <li class="step">Нажмите кнопку "Подключить" в приложении</li>
-                </ol>
-            </div>
-        </div>
-        
-        <!-- Footer -->
-        <div class="footer">
-            <p>Сервис импорта VPN конфигураций</p>
-            <div class="footer-links">
-                <a href="#" onclick="showHelp()" class="footer-link">Помощь</a>
-                <a href="#" onclick="showPrivacy()" class="footer-link">Конфиденциальность</a>
-                <a href="#" onclick="showAbout()" class="footer-link">О сервисе</a>
-            </div>
-        </div>
-    </div>
+  </header>
 
-    <script>
-        // Получаем параметр config из URL
-        function getConfigFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('config');
-        }
-        
-        // Определяем платформу
-        function detectPlatform() {
-            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            const platformInfo = document.getElementById('platformInfo');
-            const platformBadge = document.getElementById('platformBadge');
-            const platformHint = document.getElementById('platformHint');
-            
-            if (/android/i.test(userAgent)) {
-                platformBadge.className = 'platform-badge android-badge';
-                platformBadge.textContent = 'Android';
-                platformHint.textContent = 'Открываю Happ для Android...';
-                platformInfo.classList.remove('hidden');
-                return 'android';
-            } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-                platformBadge.className = 'platform-badge ios-badge';
-                platformBadge.textContent = 'iOS';
-                platformHint.textContent = 'Открываю Happ для iOS...';
-                platformInfo.classList.remove('hidden');
-                return 'ios';
-            }
-            return 'unknown';
-        }
-        
-        // Декодирует конфиг и показывает ключ
-        function decodeAndShowConfig(configB64) {
-            try {
-                const decoded = atob(configB64);
-                const config = JSON.parse(decoded);
-                const vlessKey = config.configs[0].config;
-                
-                // Показываем ключ в textarea
-                const keyElement = document.getElementById('vlessKey');
-                keyElement.value = vlessKey;
-                keyElement.style.height = 'auto';
-                keyElement.style.height = (keyElement.scrollHeight) + 'px';
-                
-                // Сохраняем ключ для повторного использования
-                window.currentVlessKey = vlessKey;
-                window.currentConfigB64 = configB64;
-                
-                return vlessKey;
-            } catch (e) {
-                console.error('Ошибка декодирования:', e);
-                return null;
-            }
-        }
-        
-        // Пытается открыть Happ
-        function openHapp() {
-            const configB64 = getConfigFromURL();
-            if (configB64) {
-                // Декодируем и сохраняем конфиг
-                decodeAndShowConfig(configB64);
-                
-                // Определяем платформу
-                detectPlatform();
-                
-                // Пытаемся открыть Happ
-                const happUrl = 'happ://import/config?config=' + configB64;
-                window.location.href = happUrl;
-                
-                // Сохраняем время попытки
-                window.happOpenAttemptTime = Date.now();
-                
-                // Fallback через 1.5 секунды
-                setTimeout(() => {
-                    // Если прошло больше 1.5 секунд и мы все еще на странице
-                    if (Date.now() - window.happOpenAttemptTime > 1400) {
-                        showFallback();
-                    }
-                }, 1500);
-                
-                // Ловим возврат на страницу (если Happ не установлен)
-                window.addEventListener('blur', function onBlur() {
-                    // Если ушли с страницы, считаем что Happ открылся
-                    setTimeout(() => {
-                        window.removeEventListener('blur', onBlur);
-                    }, 100);
-                });
-                
-            } else {
-                showError();
-            }
-        }
-        
-        // Показывает fallback интерфейс
-        function showFallback() {
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('fallback').classList.remove('hidden');
-            document.getElementById('fallback').classList.add('slide-in');
-        }
-        
-        // Показывает ошибку
-        function showError() {
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('error').classList.remove('hidden');
-        }
-        
-        // Показывает уведомление о копировании
-        function showCopyConfirmation() {
-            const confirmation = document.getElementById('copyConfirmation');
-            confirmation.style.display = 'block';
-            setTimeout(() => {
-                confirmation.style.display = 'none';
-            }, 2000);
-        }
-        
-        // Копирует ключ в буфер обмена
-        function copyToClipboard() {
-            if (window.currentVlessKey) {
-                navigator.clipboard.writeText(window.currentVlessKey).then(() => {
-                    showCopyConfirmation();
-                }).catch(err => {
-                    // Fallback для старых браузеров
-                    const textarea = document.createElement('textarea');
-                    textarea.value = window.currentVlessKey;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    showCopyConfirmation();
-                });
-            }
-        }
-        
-        // Делится конфигурацией
-        function shareConfig() {
-            if (window.currentVlessKey && navigator.share) {
-                navigator.share({
-                    title: 'VPN конфигурация',
-                    text: 'Моя VPN конфигурация для Happ',
-                    url: window.location.href
-                }).catch(err => {
-                    console.log('Ошибка sharing:', err);
-                });
-            } else if (window.currentVlessKey) {
-                copyToClipboard();
-                alert('Ключ скопирован в буфер обмена. Поделитесь им вручную.');
-            }
-        }
-        
-        // Помощь
-        function showHelp() {
-            alert('Помощь:\n\n1. Нажмите "Скопировать ключ"\n2. Откройте Happ\n3. Нажмите "+" → "Импорт из буфера"\n4. Нажмите "Подключить"\n\nЕсли не работает:\n• Убедитесь что Happ установлен\n• Перезапустите приложение\n• Перезагрузите страницу');
-        }
-        
-        function showPrivacy() {
-            alert('Конфиденциальность:\n\n• Мы не сохраняем ваши ключи\n• Все данные обрабатываются локально\n• Ссылки шифруются с помощью Base64\n• Сессия не отслеживается');
-        }
-        
-        function showAbout() {
-            alert('О сервисе:\n\nСервис для автоматического импорта VPN конфигураций в приложение Happ.\n\nВерсия: 1.0.0\nТехнологии: HTML5, JavaScript\nЦель: Упростить настройку VPN');
-        }
-        
-        // Инициализация при загрузке
-        window.onload = function() {
-            // Назначаем обработчики кнопок
-            document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
-            document.getElementById('retryBtn').addEventListener('click', openHapp);
-            document.getElementById('shareBtn').addEventListener('click', shareConfig);
-            
-            // Запускаем процесс
-            openHapp();
-            
-            // Автоматически фокусируемся на key для удобства копирования
-            const keyElement = document.getElementById('vlessKey');
-            keyElement.addEventListener('click', function() {
-                this.select();
-            });
-        };
-        
-        // Обработка видимости страницы (для определения возврата)
-        document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'visible') {
-                // Если вернулись на страницу, показываем fallback
-                if (window.happOpenAttemptTime && Date.now() - window.happOpenAttemptTime > 1000) {
-                    showFallback();
-                }
-            }
-        });
-    </script>
+  <main class="container">
+    <section id="home" class="card hero">
+      <h1>Быстрый и безопасный VPN без ограничений</h1>
+      <p>2 дня бесплатно. До 25 устройств. Работает в России.</p>
+      <div class="btn-row">
+        <a href="#tariffs" class="btn primary">▶ ПОДКЛЮЧИТЬ VPN</a>
+        <button class="btn success" data-modal-open="trialModal">🎁 Пробный период</button>
+      </div>
+    </section>
+
+    <section id="tariffs" class="card">
+      <div class="title-row">
+        <h2>Тарифы</h2>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-tab="content">🌍 Доступ к YouTube/TikTok</button>
+        <button class="tab" data-tab="speed">⚡ Ускорение интернета</button>
+      </div>
+      <div class="skeleton-wrap" id="tariffSkeleton">
+        <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+      </div>
+      <div class="pricing-grid" id="pricingGrid"></div>
+    </section>
+
+    <section id="devices" class="card">
+      <div class="title-row">
+        <h2>Мои устройства</h2>
+        <span class="device-counter">Подключено: 2 / 25</span>
+      </div>
+      <div class="devices-grid">
+        <article class="card">
+          <div class="device-head">
+            <strong>🌍 📱 Pixel 7 (Android)</strong>
+            <span class="muted">Тариф: 30 дней</span>
+          </div>
+          <p class="muted">Осталось: 24 дня • Действует до: 10.03.2025</p>
+          <div class="progress"><span style="width:80%"></span></div>
+          <div class="icon-btns">
+            <button class="btn" data-modal-open="keyModal">Ключ</button>
+            <button class="btn" data-modal-open="qrModal">QR</button>
+            <button class="btn danger">Удалить</button>
+          </div>
+        </article>
+        <article class="card">
+          <div class="device-head">
+            <strong>⚡ 💻 MacBook Pro (macOS)</strong>
+            <span class="muted">Тариф: 90 дней</span>
+          </div>
+          <p class="muted">Осталось: 67 дней • Действует до: 22.04.2025</p>
+          <div class="progress"><span style="width:74%"></span></div>
+          <div class="icon-btns">
+            <button class="btn" data-modal-open="keyModal">Ключ</button>
+            <button class="btn" data-modal-open="qrModal">QR</button>
+            <button class="btn danger">Удалить</button>
+          </div>
+        </article>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn primary" data-modal-open="buyModal">+ Добавить устройство</button>
+      </div>
+    </section>
+
+    <section id="referrals" class="card">
+      <h2>Реферальная программа</h2>
+      <div class="ref-grid">
+        <div class="card stat">Приглашено друзей<strong>3</strong></div>
+        <div class="card stat">Заработано<strong>100 ₽</strong></div>
+        <div class="card stat">Доступно к выводу<strong>100 ₽</strong></div>
+      </div>
+      <p class="muted">Минимум для вывода: 100 ₽</p>
+      <code id="refCode">https://t.me/vless_vpn_store_bot?start=ref_user_123</code>
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn" id="copyRef">Копировать</button><span class="copy-note" id="copyNote">Скопировано!</span>
+        <button class="btn">📤 Поделиться</button>
+        <button class="btn success" data-modal-open="withdrawModal">💳 Вывести деньги</button>
+      </div>
+      <h3>Топ-3 рефоводов</h3>
+      <div class="top-grid">
+        <div class="card">1. @alex • 15 друзей • 780 ₽</div>
+        <div class="card">2. @ninja • 12 друзей • 640 ₽</div>
+        <div class="card">3. @vera • 8 друзей • 420 ₽</div>
+      </div>
+    </section>
+
+    <section id="topup" class="card">
+      <h2>Пополнение баланса</h2>
+      <div class="amounts">
+        <button class="amount-btn">100</button>
+        <button class="amount-btn active">200</button>
+        <button class="amount-btn">500</button>
+        <button class="amount-btn">1000</button>
+        <button class="amount-btn">3000</button>
+      </div>
+      <div class="two-col">
+        <article class="card">
+          <h3>💳 Банковская карта</h3>
+          <p class="muted">Перейдите к фиктивной оплате и при необходимости отправьте скриншот.</p>
+          <div class="btn-row">
+            <button class="btn primary" data-modal-open="paymentModal">Перейти к оплате</button>
+            <button class="btn" data-modal-open="screenshotModal">📤 Отправить скриншот</button>
+          </div>
+        </article>
+        <article class="card">
+          <h3>💱 CryptoBot (USDT)</h3>
+          <p class="muted">Сгенерируйте фиктивный счёт и оплатите в USDT.</p>
+          <div class="btn-row">
+            <button class="btn success" data-modal-open="cryptoModal">Сгенерировать счёт</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="support" class="card">
+      <h2>Поддержка / FAQ</h2>
+      <div class="faq-item open">
+        <button class="faq-q">Как подключиться?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Выберите тариф, оплатите и откройте ключ на устройстве. Инструкции доступны в меню после покупки.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Сколько устройств можно подключить?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">До 25 устройств одновременно на одном аккаунте.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Можно ли получить пробный период?<i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-a">Да, единоразово на 2 дня через кнопку «🎁 Пробный период».</div>
+      </div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn primary" data-modal-open="supportModal">📨 Написать в поддержку</button>
+      </div>
+    </section>
+
+    <section id="admin" class="card">
+      <h2>Админ-панель (демо)</h2>
+      <div class="admin-stats" style="grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); margin-bottom:12px;">
+        <div class="card stat">Пользователи<strong>2 540</strong></div>
+        <div class="card stat">Доход<strong>342 100 ₽</strong></div>
+        <div class="card stat">Активные устройства<strong>4 819</strong></div>
+      </div>
+      <h3>Последние платежи</h3>
+      <div class="payments-list">
+        <div class="card admin-pay">#15841 • 500 ₽ <span class="status pending">Ожидает</span><div class="btn-row"><button class="btn success">Одобрить</button><button class="btn danger">Отклонить</button></div></div>
+        <div class="card admin-pay">#15840 • 1000 ₽ <span class="status approved">Одобрен</span><div class="btn-row"><button class="btn success">Одобрить</button><button class="btn danger">Отклонить</button></div></div>
+        <div class="card admin-pay">#15839 • 200 ₽ <span class="status declined">Отклонён</span><div class="btn-row"><button class="btn success">Одобрить</button><button class="btn danger">Отклонить</button></div></div>
+      </div>
+      <h3>Рассылка</h3>
+      <textarea placeholder="Введите текст рассылки..."></textarea>
+      <div style="margin-top:10px;"><button class="btn primary">Отправить</button></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <button class="btn ghost" data-modal-open="offerModal">Оферта</button>
+        <button class="btn ghost" data-modal-open="privacyModal">Политика конфиденциальности</button>
+        <button class="btn ghost" data-modal-open="refundModal">Возврат</button>
+      </div>
+      <div>© 2026 VLESS VPN Store. Demo web clone.</div>
+    </div>
+  </footer>
+
+  <div class="modal" id="buyModal"><div class="modal-content"><div class="modal-head"><h3>Подтверждение покупки</h3><button class="close" data-close>×</button></div><p>Выберите способ оплаты:</p><div class="btn-row"><button class="btn">💰 Баланс</button><button class="btn">💳 Карта</button><button class="btn">💱 Крипто</button></div></div></div>
+  <div class="modal" id="trialModal"><div class="modal-content"><div class="modal-head"><h3>Пробный период</h3><button class="close" data-close>×</button></div><p>🎉 Пробный период на 2 дня активирован (демо).</p></div></div>
+  <div class="modal" id="keyModal"><div class="modal-content"><div class="modal-head"><h3>Ваш VLESS ключ</h3><button class="close" data-close>×</button></div><code>vless://89f4cbb8-01e9-4a98-afe1-e12fe2cbf001@vpn-store.demo:443?security=tls&encryption=none&type=ws#Pixel7</code></div></div>
+  <div class="modal" id="qrModal"><div class="modal-content"><div class="modal-head"><h3>QR-код подключения</h3><button class="close" data-close>×</button></div><img alt="QR" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=vless-demo" style="width:220px;height:220px;border-radius:12px;border:1px solid rgba(255,255,255,.15);" /></div></div>
+  <div class="modal" id="withdrawModal"><div class="modal-content"><div class="modal-head"><h3>Вывод средств</h3><button class="close" data-close>×</button></div><input class="field" placeholder="Номер карты" /><div style="margin-top:10px;"><button class="btn success">Отправить заявку</button></div></div></div>
+  <div class="modal" id="paymentModal"><div class="modal-content"><div class="modal-head"><h3>Оплата картой</h3><button class="close" data-close>×</button></div><p>Фиктивная ссылка оплаты: <code>https://pay.demo-vless.store/invoice/15841</code></p></div></div>
+  <div class="modal" id="screenshotModal"><div class="modal-content"><div class="modal-head"><h3>Отправить скриншот</h3><button class="close" data-close>×</button></div><p>Отправьте скриншот платежа в поддержку — это демо-окно.</p></div></div>
+  <div class="modal" id="cryptoModal"><div class="modal-content"><div class="modal-head"><h3>CryptoBot счёт</h3><button class="close" data-close>×</button></div><p>Счёт #USDT-9081 на 200 RUB (эквивалент).</p><code>https://t.me/CryptoBot?start=invoice_demo_9081</code></div></div>
+  <div class="modal" id="supportModal"><div class="modal-content"><div class="modal-head"><h3>Поддержка</h3><button class="close" data-close>×</button></div><textarea placeholder="Опишите ваш вопрос..."></textarea><div style="margin-top:10px;"><button class="btn primary">Отправить</button></div></div></div>
+  <div class="modal" id="offerModal"><div class="modal-content"><div class="modal-head"><h3>Публичная оферта</h3><button class="close" data-close>×</button></div><p class="muted">Демо-текст оферты. Услуга предоставляется в тестовом режиме без реальных платежей.</p></div></div>
+  <div class="modal" id="privacyModal"><div class="modal-content"><div class="modal-head"><h3>Политика конфиденциальности</h3><button class="close" data-close>×</button></div><p class="muted">Демо-текст политики. Реальный сбор персональных данных не осуществляется.</p></div></div>
+  <div class="modal" id="refundModal"><div class="modal-content"><div class="modal-head"><h3>Политика возврата</h3><button class="close" data-close>×</button></div><p class="muted">Демо-текст возврата. Возвраты и транзакции имитируются.</p></div></div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const pricingGrid = document.getElementById('pricingGrid');
+    const skeleton = document.getElementById('tariffSkeleton');
+    const tariffData = [
+      { period: '30 дней', price: '90 ₽' },
+      { period: '90 дней', price: '240 ₽' },
+      { period: '365 дней', price: '850 ₽' }
+    ];
+
+    function renderTariffs(tag) {
+      pricingGrid.innerHTML = tariffData.map(item => `
+        <article class="card price-card">
+          <h3>${tag} ${item.period}</h3>
+          <p>Оптимально для стабильного доступа</p>
+          <div class="price">${item.price}</div>
+          <button class="btn primary" data-modal-open="buyModal">Купить</button>
+        </article>
+      `).join('');
+    }
+    renderTariffs('🌍');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        skeleton.style.display = 'grid';
+        pricingGrid.style.display = 'none';
+        setTimeout(() => {
+          renderTariffs(tab.dataset.tab === 'content' ? '🌍' : '⚡');
+          skeleton.style.display = 'none';
+          pricingGrid.style.display = 'grid';
+        }, 550);
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      const opener = e.target.closest('[data-modal-open]');
+      if (opener) {
+        document.getElementById(opener.dataset.modalOpen)?.classList.add('open');
+      }
+
+      if (e.target.matches('[data-close]') || e.target.classList.contains('modal')) {
+        e.target.closest('.modal')?.classList.remove('open');
+      }
+    });
+
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => btn.parentElement.classList.toggle('open'));
+    });
+
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.getElementById('mainNav').classList.toggle('open');
+    });
+
+    document.getElementById('adminToggle').addEventListener('click', () => {
+      document.body.classList.toggle('admin');
+    });
+
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    document.getElementById('copyRef').addEventListener('click', async () => {
+      const text = document.getElementById('refCode').textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (err) {
+        // Clipboard API may be unavailable in insecure contexts.
+      }
+      const note = document.getElementById('copyNote');
+      note.classList.add('show');
+      setTimeout(() => note.classList.remove('show'), 1400);
+    });
+  </script>
 </body>
 </html>
